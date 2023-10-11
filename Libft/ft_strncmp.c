@@ -1,34 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strlcpy.c                                       :+:      :+:    :+:   */
+/*   ft_strncmp.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/08/27 13:13:20 by donson            #+#    #+#             */
-/*   Updated: 2023/10/11 17:28:56 by donson           ###   ########.fr       */
+/*   Created: 2023/10/11 13:04:47 by donson            #+#    #+#             */
+/*   Updated: 2023/10/11 13:14:30 by donson           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-size_t	ft_strlcpy(char *dst, const char *src, size_t d_size)
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
 	unsigned int	i;
-	unsigned int	srclen;
 
-	srclen = ft_strlen(src);
 	i = 0;
-	if (d_size != 0)
+	while (((unsigned char)s1[i] != '\0' || (unsigned char)s2[i] != '\0')
+		&& i < n)
 	{
-		while (i < d_size - 1 && src[i] != '\0')
-		{
-			dst[i] = src[i];
-			i++;
-		}
+		if ((unsigned char)s1[i] != (unsigned char)s2[i])
+			return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+		i++;
 	}
-	else
-		return (srclen);
-	dst[i] = '\0';
-	return (srclen);
+	return (0);
 }
