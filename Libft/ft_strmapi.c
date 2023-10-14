@@ -1,34 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_strmapi.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/11 16:40:11 by donson            #+#    #+#             */
-/*   Updated: 2023/10/12 14:31:08 by eun              ###   ########.fr       */
+/*   Created: 2023/10/14 13:53:43 by eun               #+#    #+#             */
+/*   Updated: 2023/10/14 14:42:16 by eun              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strdup(const char *s1)
+char	*ft_strmapi(char const *s, char (*f)(unsigned int, char))
 {
-	size_t	len;
-	char	*str;
+	unsigned char	*string;
+	size_t			len;
+	size_t			i;
 
-	if (!(*s1))
-	{
-		str = (char *)malloc(sizeof(char));
-		if (!str)
-			return (NULL);
-		*str = '\0';
-		return (str);
-	}
-	len = ft_strlen(s1);
-	str = (char *)malloc(((len + 1) * sizeof(char)));
-	if (!str)
+	len = ft_strlen(s);
+	string = (unsigned char *)ft_calloc(len + 1, sizeof(unsigned char));
+	if (!string)
 		return (NULL);
-	ft_strlcpy(str, s1, len + 1);
-	return (str);
+	i = 0;
+	while (i++ < len)
+		string[i - 1] = f(i - 1, s[i - 1]);
+	string[len] = 0;
+	return ((char *)string);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/11 19:14:43 by donson            #+#    #+#             */
-/*   Updated: 2023/10/11 20:02:06 by donson           ###   ########.fr       */
+/*   Updated: 2023/10/12 12:52:43 by eun              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	size_t	len_s2;
 
 	if (s1 == NULL || s2 == NULL)
-		return ((void *)calloc(1, 1));
+		return (NULL);
 	len_s1 = ft_strlen(s1);
 	len_s2 = ft_strlen(s2);
-	result = (char *)calloc(len_s1 + len_s2 + 1, sizeof(char));
+	result = (char *)ft_calloc(sizeof(char), len_s1 + len_s2 + 1);
 	if (!result)
 		return (NULL);
 	ft_memmove(result, s1, len_s1);

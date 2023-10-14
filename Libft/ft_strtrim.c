@@ -1,34 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strdup.c                                        :+:      :+:    :+:   */
+/*   ft_strtrim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/11 16:40:11 by donson            #+#    #+#             */
-/*   Updated: 2023/10/12 14:31:08 by eun              ###   ########.fr       */
+/*   Created: 2023/10/12 13:45:10 by eun               #+#    #+#             */
+/*   Updated: 2023/10/12 14:48:36 by eun              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strdup(const char *s1)
+char	*ft_strtrim(char const *s1, char const *set)
 {
-	size_t	len;
-	char	*str;
+	size_t	start;
+	size_t	end;
+	char	*result;
 
-	if (!(*s1))
+	start = 0;
+	end = ft_strlen(s1);
+	while (ft_strchr(set, s1[start]) && s1[start] != 0)
 	{
-		str = (char *)malloc(sizeof(char));
-		if (!str)
-			return (NULL);
-		*str = '\0';
-		return (str);
+		start++;
+		if (start == end)
+			return (ft_strdup(""));
 	}
-	len = ft_strlen(s1);
-	str = (char *)malloc(((len + 1) * sizeof(char)));
-	if (!str)
-		return (NULL);
-	ft_strlcpy(str, s1, len + 1);
-	return (str);
+	while (ft_strrchr(set, s1[end]) && end != 0)
+	{
+		end--;
+		if (start == end)
+			return (ft_strdup(""));
+	}
+	result = ft_substr(s1, start, end - start + 1);
+	return (result);
 }
