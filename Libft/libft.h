@@ -6,7 +6,7 @@
 /*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 16:12:43 by donson            #+#    #+#             */
-/*   Updated: 2023/10/12 13:45:38 by eun              ###   ########.fr       */
+/*   Updated: 2023/10/14 15:07:25 by eun              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include <stdio.h>
 # include <stdlib.h>
+# include <unistd.h>
 
 typedef struct s_list
 {

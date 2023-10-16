@@ -6,7 +6,7 @@
 /*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 14:51:44 by eun               #+#    #+#             */
-/*   Updated: 2023/10/12 18:58:37 by eun              ###   ########.fr       */
+/*   Updated: 2023/10/16 12:01:09 by eun              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,9 +80,9 @@ char	**ft_split(char const *s, char c)
 	st = (unsigned char *)s;
 	i = count_word(st, c) + 1;
 	result = (unsigned char **)malloc(i * (sizeof(unsigned char *)));
-	i = 0;
-	if (!result)
+	if ((!result) || i == 1)
 		return (NULL);
+	i = 0;
 	while (*st != '\0')
 	{
 		while (*st != '\0' && *st == c)
