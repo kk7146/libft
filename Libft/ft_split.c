@@ -6,13 +6,13 @@
 /*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 14:51:44 by eun               #+#    #+#             */
-/*   Updated: 2023/10/16 12:01:09 by eun              ###   ########.fr       */
+/*   Updated: 2023/10/16 14:35:32 by eun              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int	count_word(unsigned char *str, unsigned char charset)
+static int	count_word(char *str, char charset)
 {
 	int	i;
 	int	count;
@@ -31,7 +31,7 @@ static int	count_word(unsigned char *str, unsigned char charset)
 	return (count);
 }
 
-static int	len_word(unsigned char *str, unsigned char charset)
+static int	len_word(char *str, char charset)
 {
 	int	i;
 
@@ -41,15 +41,15 @@ static int	len_word(unsigned char *str, unsigned char charset)
 	return (i);
 }
 
-static unsigned char	*fill(unsigned char *str, unsigned char charset)
+static char	*fill(char *str, char charset)
 {
-	int				len;
-	int				i;
-	unsigned char	*word;
+	int		len;
+	int		i;
+	char	*word;
 
 	i = 0;
 	len = len_word(str, charset);
-	word = (unsigned char *)malloc(sizeof(unsigned char) * (len + 1));
+	word = (char *)malloc(sizeof(char) * (len + 1));
 	if (!str)
 		return (NULL);
 	while (i < len)
@@ -61,7 +61,7 @@ static unsigned char	*fill(unsigned char *str, unsigned char charset)
 	return (word);
 }
 
-static void	*free_all(unsigned char	**result, int i)
+static void	*free_all(char	**result, int i)
 {
 	while (i)
 		free(result[--i]);
@@ -71,19 +71,18 @@ static void	*free_all(unsigned char	**result, int i)
 
 char	**ft_split(char const *s, char c)
 {
-	unsigned char	**result;
-	unsigned char	*st;
-	int				i;
+	char	**result;
+	char	*st;
+	int		i;
+	int		j;
 
-	if (s == 0)
-		return (0);
-	st = (unsigned char *)s;
-	i = count_word(st, c) + 1;
-	result = (unsigned char **)malloc(i * (sizeof(unsigned char *)));
-	if ((!result) || i == 1)
+	st = (char *)s;
+	j = count_word(st, c);
+	result = (char **)malloc((j + 1) * (sizeof(char *)));
+	if ((!result))
 		return (NULL);
 	i = 0;
-	while (*st != '\0')
+	while (*st != '\0' && j--)
 	{
 		while (*st != '\0' && *st == c)
 			st++;
