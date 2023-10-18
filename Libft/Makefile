@@ -4,21 +4,30 @@ OBJS	= $(SRCS:.c=.o)
 OBJS_BONUS	= $(SRCS_BONUS:.c=.o)
 NAME	= libft.a
 
-.c.o:
-	cc -std=c99 -Wall -Wextra -Werror -c $< -o $(<:.c=.o) -I includes
+all_m: $(NAME) $(OBJS)
 
-$(NAME): $(OBJS)
+all: all_m
+
+make bonus_m: $(OBJS_BONUS)
+	ar rc $(NAME) $(OBJS_BONUS)
+	touch $@
+
+bonus: bonus_m all_m
+
+$(NAME) : $(OBJS)
 	ar rc $(NAME) $(OBJS)
+	touch $@
 
-all: $(NAME)
-
-bonus: $(OBJS) $(OBJS_BONUS)
-	ar rc $(NAME) $(OBJS) $(OBJS_BONUS)
+.c.o:
+	cc -Wall -Wextra -Werror -c $< -o $(<:.c=.o) -I includes
 
 clean:
 	rm -f $(OBJS) $(OBJS_BONUS)
+	rm -f bonus_m all_m
 
 fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
+
+.PHONY: all bonus clean fclean re

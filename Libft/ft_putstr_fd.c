@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/14 15:23:16 by eun               #+#    #+#             */
-/*   Updated: 2023/10/14 15:25:56 by eun              ###   ########.fr       */
+/*   Updated: 2023/10/18 15:27:48 by donson           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	ft_putstr_fd(char *s, int fd)
 	size_t	len;
 
 	len = ft_strlen(s);
-	if (fd == -1 || fd == 0)
+	if (fd == -1)
 		return ;
 	write(fd, s, len);
 }
