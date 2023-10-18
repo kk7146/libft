@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/12 14:51:44 by eun               #+#    #+#             */
-/*   Updated: 2023/10/16 14:35:32 by eun              ###   ########.fr       */
+/*   Updated: 2023/10/18 11:24:49 by donson           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,10 @@ static char	*fill(char *str, char charset)
 
 	i = 0;
 	len = len_word(str, charset);
-	word = (char *)malloc(sizeof(char) * (len + 1));
 	if (!str)
+		return (NULL);
+	word = (char *)malloc(sizeof(char) * (len + 1));
+	if (!word)
 		return (NULL);
 	while (i < len)
 	{
