@@ -6,57 +6,65 @@
 /*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:46:00 by eun               #+#    #+#             */
-/*   Updated: 2023/10/23 12:51:42 by eun              ###   ########.fr       */
+/*   Updated: 2023/10/26 17:29:43 by eun              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*new_line_node(t_list_line *data, int fd)
+static char	*result_eof(t_list_fd *lst)
 {
-	size_t	i;
-	int		size;
-	char	*buf;
-	char	*buf_buf;
+	char	*result;
 
-	i = 0
-	while (i++)
-	{
-		if (buf != NULL)
-		{
-			buf_buf = buf;
-			free(buf);
-		}
-		buf = malloc(((BUFFER_SIZE * i) + 1) * sizeof(char));
-		if (!buf)
-			return (NULL);
-		size = read(fd, buf, BUFFER_SIZE);
-		if (size < 0)
-		{
-			free(buf);
-			return (NULL);
-		}
-		else
-		{
-			if (!size)
-		}
-	}
-	return (return_line());
+	result = ft_strdup(lst->content);
+	free(lst->content_add);
+	lst->content_add = NULL;
+	lst->content = NULL;
+	return (result);
 }
 
-static char	*return_line(t_list_line **data, int fd)
+static char	*return_line(t_list_fd *lst)
 {
-	char	*content_buf;
+	int		read_size;
+	char	*result;
+	char	buf[BUFFER_SIZE + 1];
+	int		index;
 
-	if (*data)
+	if (!lst->content)
 	{
-		content_buf = (*data)->content;
-		data = (*data)->next;
-		free(*data);
-		return (content_buf);
+		read_size = read(lst->fd, buf, BUFFER_SIZE);
+		if (read_size < 0)
+			return (NULL);
+		buf[read_size] = '\0';
+		lst->content = ft_strdup(buf);
+		if (!lst->content)
+			return (NULL);
+		return (return_line(lst));
+	}
+	if (!ft_strchr(lst->content, '\n', &index))
+	{
+		read_size = read(lst->fd, buf, BUFFER_SIZE);
+		if (read_size < 0)
+			return (NULL);
+		if (read_size == 0)
+			return (result_eof(lst));
+		buf[read_size] = '\0';
+		result = ft_strjoin(lst->content, buf);
+		if (!result)
+			return (NULL);
+		free(lst->content);
+		lst->content = result;
+		return (return_line(lst));
 	}
 	else
-		return (new_line_node(data, fd));
+	{
+		lst->content[index] = '\0';
+		result = ft_strdup(lst->content);
+		if (!result)
+			return (NULL);
+		lst->content += index + 1;
+		return (result);
+	}
 }
 
 char	*get_next_line(int fd)
@@ -67,7 +75,7 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE < 1)
 		return (NULL);
 	data_buf = data;
-	while (data_buf->fd != fd && data_buf != NULL)
+	while (data_buf != NULL && data_buf->fd != fd)
 		data_buf = data_buf->next;
 	if (!data_buf)
 	{
@@ -75,8 +83,8 @@ char	*get_next_line(int fd)
 		if (!data_buf)
 			return (NULL);
 		data_buf->fd = fd;
-		data_buf->line = NULL;
+		data_buf->content = NULL;
 		data_buf->next = NULL;
 	}
-	return (return_line(data_buf->line, data_buf->fd));
+	return (return_line(data_buf));
 }

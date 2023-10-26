@@ -6,108 +6,97 @@
 /*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:46:04 by eun               #+#    #+#             */
-/*   Updated: 2023/10/23 12:44:18 by eun              ###   ########.fr       */
+/*   Updated: 2023/10/26 17:11:38 by eun              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "get_next_line.h"
 
-static int	count_word(char *str, char charset)
+size_t	ft_strlcpy(char *dst, const char *src, size_t d_size)
 {
-	int	i;
-	int	count;
+	unsigned int	i;
+	unsigned int	srclen;
 
-	count = 0;
 	i = 0;
-	while (str[i] != '\0')
+	srclen = 0;
+	while (src[srclen] != '\0')
+		srclen++;
+	if (d_size != 0)
 	{
-		while (str[i] != '\0' && str[i] == charset)
+		while (i < d_size - 1 && src[i] != '\0')
+		{
+			dst[i] = src[i];
 			i++;
-		if(str[i] != '\0')
-			count++;
-		while (str[i] != '\0' && !(str[i] == charset))
-			i++;
+		}
 	}
-	return (count);
+	else
+		return (srclen);
+	dst[i] = '\0';
+	return (srclen);
 }
 
-static char	*fill(char *str, char charset)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	int		len;
-	int		i;
-	char	*word;
+	char	*result;
+	size_t	len_s1;
+	size_t	len_s2;
 
-	i = 0;
+	if (s1 == NULL || s2 == NULL)
+		return (NULL);
+	len_s1 = 0;
+	len_s2 = 0;
+	while ((unsigned char)s1[len_s1] != '\0')
+		len_s1++;
+	while ((unsigned char)s1[len_s2] != '\0')
+		len_s2++;
+	len_s2 = 0;
+	while (s2[len_s2] != '\0')
+		len_s2++;
+	result = (char *)malloc(sizeof(char) * (len_s1 + len_s2 + 1));
+	if (!result)
+		return (NULL);
+	ft_strlcpy(result, s1, len_s1 + 1);
+	ft_strlcpy(result + len_s1, s2, len_s2 + 1);
+	return (result);
+}
+
+char	*ft_strchr(const char *s, char c, int *index)
+{
+	index = 0;
+	while (1)
+	{
+		if ((unsigned char)c == (unsigned char)*s)
+			return ((char *)s);
+		if ((unsigned char)*s == '\0')
+			break ;
+		s++;
+		index++;
+	}
+	if (c == '\0')
+		return ((char *)s);
+	return (NULL);
+	return ((char *)index);
+}
+
+char	*ft_strdup(const char *s1)
+{
+	size_t	len;
+	char	*str;
+
+	if (!(*s1))
+	{
+		str = (char *)malloc(sizeof(char));
+		if (!str)
+			return (NULL);
+		*str = '\0';
+		return (str);
+	}
 	len = 0;
-	while (str[len] != '\0' && !(str[len] == charset))
+	while (s1[len] != '\0')
 		len++;
+	str = (char *)malloc(((len + 1) * sizeof(char)));
 	if (!str)
 		return (NULL);
-	word = (char *)malloc(sizeof(char) * (len + 1));
-	if (!word)
-		return (NULL);
-	while (i < len)
-	{
-		word[i] = str[i];
-		i++;
-	}
-	word[i] = '\0';
-	return (word);
-}
-
-static void	*free_all(char	**result, int i)
-{
-	while (i)
-		free(result[--i]);
-	free(result);
-	return (NULL);
-}
-
-char	**ft_split_getnextline(char const *s, char c)
-{
-	char	**result;
-	char	*st;
-	int		i;
-	int		j;
-
-	st = (char *)s;
-	j = count_word(st, c);
-	result = (char **)malloc((j + 1) * (sizeof(char *)));
-	if ((!result))
-		return (NULL);
-	i = 0;
-	while (*st != '\0' && j--)
-	{
-		while (*st != '\0' && *st == c)
-			st++;
-		if (*st != '\0')
-			result[i++] = fill(st, c);
-		if (!result[i - 1])
-			return (free_all(result, i));
-		while (*st && !(*st == c))
-			st++;
-	}
-	result[i] = 0;
-	return ((char **)result);
-}
-
-void	check_leak(void)
-{
-	system("leaks a.out");
-}
-
-int	main()
-{
-	char	*c = "aaaa\naaaaa\naaaaa\n\n";
-	char	**chr;
-
-	chr = ft_split_getnextline(c, '\n');
-	for (size_t i = 0; chr[i] != NULL; i++)
-		printf("%s\n", chr[i]);
-	for (size_t i = 0; chr[i] != NULL; i++)
-		free(chr[i]);
-	free(chr);
-	atexit(check_leak);
-	return (0);
+	ft_strlcpy(str, s1, len + 1);
+	return (str);
 }
