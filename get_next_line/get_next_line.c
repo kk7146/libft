@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:46:00 by eun               #+#    #+#             */
-/*   Updated: 2023/10/26 17:29:43 by eun              ###   ########.fr       */
+/*   Updated: 2023/10/26 20:11:53 by donson           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,10 @@ static char	*result_eof(t_list_fd *lst)
 	char	*result;
 
 	result = ft_strdup(lst->content);
+	lst->head->next = lst->next;
+	lst->next->head = lst->head;
 	free(lst->content_add);
-	lst->content_add = NULL;
-	lst->content = NULL;
+	free(lst);
 	return (result);
 }
 
@@ -52,7 +53,6 @@ static char	*return_line(t_list_fd *lst)
 		result = ft_strjoin(lst->content, buf);
 		if (!result)
 			return (NULL);
-		free(lst->content);
 		lst->content = result;
 		return (return_line(lst));
 	}
@@ -69,12 +69,27 @@ static char	*return_line(t_list_fd *lst)
 
 char	*get_next_line(int fd)
 {
-	static t_list_fd	*data;
-	t_list_fd			*data_buf;
+	static t_list_fd	*data_buf;
+	t_list_fd			*tail;
+	t_list_fd			*head;
+	char				*cha;
 
-	if (fd < 0 || BUFFER_SIZE < 1)
+	cha = NULL;
+	if (fd <= 0 || BUFFER_SIZE < 1)
 		return (NULL);
-	data_buf = data;
+	if (!data_buf)
+	{
+		tail = (t_list_fd *)malloc(sizeof(t_list_fd));
+		if (!tail)
+			return (NULL);
+		head = (t_list_fd *)malloc(sizeof(t_list_fd));
+		if (!head)
+			return (NULL);
+		tail->head = head;
+		tail->next = NULL;
+		head->head = NULL;
+		head->next = tail;
+	}
 	while (data_buf != NULL && data_buf->fd != fd)
 		data_buf = data_buf->next;
 	if (!data_buf)
@@ -84,7 +99,24 @@ char	*get_next_line(int fd)
 			return (NULL);
 		data_buf->fd = fd;
 		data_buf->content = NULL;
-		data_buf->next = NULL;
+		data_buf->next = tail;
+		data_buf->head = tail->head;
+		data_buf->next->head = data_buf;
 	}
 	return (return_line(data_buf));
+}
+#include <fcntl.h>
+
+int main()
+{
+	int a;
+	int i = 0;
+	a = open("test", O_RDONLY);
+
+	while (i < 13)
+	{
+		printf("%s\n", get_next_line(a));
+		i++;
+	}
+	close(a);
 }

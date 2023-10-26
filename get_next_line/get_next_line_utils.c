@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:46:04 by eun               #+#    #+#             */
-/*   Updated: 2023/10/26 17:11:38 by eun              ###   ########.fr       */
+/*   Updated: 2023/10/26 17:50:33 by donson           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 
 char	*ft_strchr(const char *s, char c, int *index)
 {
-	index = 0;
+	*index = 0;
 	while (1)
 	{
 		if ((unsigned char)c == (unsigned char)*s)
@@ -70,7 +70,7 @@ char	*ft_strchr(const char *s, char c, int *index)
 		if ((unsigned char)*s == '\0')
 			break ;
 		s++;
-		index++;
+		(*index)++;
 	}
 	if (c == '\0')
 		return ((char *)s);
