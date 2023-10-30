@@ -6,7 +6,7 @@
 /*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/05 16:12:43 by donson            #+#    #+#             */
-/*   Updated: 2023/10/19 17:55:47 by eun              ###   ########.fr       */
+/*   Updated: 2023/10/30 11:29:53 by eun              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,6 @@ typedef struct s_list_fd
 	struct s_list_fd	*next;
 }	t_list_fd;
 
-char	*get_next_line(int fd);
+void		ft_lstadd_back(t_list_line **lst, t_list_line *new);
 
 #endif

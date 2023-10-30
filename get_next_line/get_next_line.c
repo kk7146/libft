@@ -6,57 +6,81 @@
 /*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:46:00 by eun               #+#    #+#             */
-/*   Updated: 2023/10/23 12:51:42 by eun              ###   ########.fr       */
+/*   Updated: 2023/10/30 11:28:49 by eun              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static char	*new_line_node(t_list_line *data, int fd)
+static char	*fill(char *str, char charset)
 {
-	size_t	i;
-	int		size;
-	char	*buf;
-	char	*buf_buf;
+	int		len;
+	int		i;
+	char	*word;
 
-	i = 0
-	while (i++)
+	i = 0;
+	len = 0;
+	while (str[len] != '\0' && !(str[len] == charset))
+		len++;
+	if (!str)
+		return (NULL);
+	word = (char *)malloc(sizeof(char) * (len + 1));
+	if (!word)
+		return (NULL);
+	while (i <= len)
 	{
-		if (buf != NULL)
-		{
-			buf_buf = buf;
-			free(buf);
-		}
-		buf = malloc(((BUFFER_SIZE * i) + 1) * sizeof(char));
-		if (!buf)
-			return (NULL);
-		size = read(fd, buf, BUFFER_SIZE);
-		if (size < 0)
-		{
-			free(buf);
-			return (NULL);
-		}
-		else
-		{
-			if (!size)
-		}
+		word[i] = str[i];
+		i++;
 	}
-	return (return_line());
+	return (word);
 }
 
-static char	*return_line(t_list_line **data, int fd)
+static t_list_line	*ft_split_getnextline(char *s, char c)
 {
-	char	*content_buf;
+	t_list_line	*result;
+	t_list_line	*new;
 
-	if (*data)
+	while (*s != '\0' && *s == c)
 	{
-		content_buf = (*data)->content;
-		data = (*data)->next;
-		free(*data);
-		return (content_buf);
+		new = (t_list_line *)malloc(sizeof(t_list_line));
+		new->content = fill(s++, c);
+		new->next = NULL;
+		ft_lstadd_back(&result, new);
 	}
-	else
-		return (new_line_node(data, fd));
+	while (*s != '\0')
+	{
+		if (*s != '\0' && *s == c)
+			s++;
+		if (*s != '\0')
+		{
+			new = (t_list_line *)malloc(sizeof(t_list_line));
+			new->content = fill(s, c);
+			new->next = NULL;
+			ft_lstadd_back(&result, new);
+		}
+		while (*s && !(*s == c))
+			s++;
+	}
+	return (result);
+}
+
+static char	*return_line(t_list_fd *data, int fd)
+{
+	char		*buf;
+	t_list_line	*list_buf;
+	int			read_size;
+	int			isTrue;
+
+	isTrue = 0;
+	while ()
+	{
+		isTrue = 1;
+	}
+	while (read_size != 0)
+	{
+		read_size = read(fd, buf, BUFFER_SIZE);
+		ft_lstadd_back(data->line, ft_split_getnextline(buf));
+	}
 }
 
 char	*get_next_line(int fd)
@@ -78,5 +102,5 @@ char	*get_next_line(int fd)
 		data_buf->line = NULL;
 		data_buf->next = NULL;
 	}
-	return (return_line(data_buf->line, data_buf->fd));
+	return (return_line(data_buf, data_buf->fd));
 }
