@@ -6,37 +6,80 @@
 /*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:46:00 by eun               #+#    #+#             */
-/*   Updated: 2023/10/31 16:14:52 by donson           ###   ########.fr       */
+/*   Updated: 2023/10/31 18:15:40 by donson           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+void	ft_lstclear(t_list_line **lst)
+{
+	t_list_line	*temp;
+
+	while (lst && *lst)
+	{
+		temp = (*lst)->next;
+		free((*lst)->content);
+		free(*lst);
+		*lst = temp;
+	}
+}
+
+char	*ft_strchr(const char *s, int c)
+{
+	while (1)
+	{
+		if ((unsigned char)c == (unsigned char)*s)
+			return ((char *)s);
+		if ((unsigned char)*s == '\0')
+			break ;
+		s++;
+	}
+	if (c == '\0')
+		return ((char *)s);
+	return (NULL);
+}
+
 char	*get_next_line(int fd)
 {
-	static t_list_fd	*head;
-	t_list_fd			*data;
-	t_list_fd			*head_buf;
+	static t_list_line	*data[FD_SIZE];
+	char	*result;
 
 	if (fd < 1 || fd > FD_SIZE || BUFFER_SIZE < 1)
 		return (NULL);
-	if (!head)
+	if (!data[fd] || !(*data[fd])->content)
+	{
+		if (!data[fd])
+			data[fd] = (t_list_line *)malloc(sizeof(t_list_line));
+		if (!data[fd])
+			return (NULL);
+		if (read_buf(&result, fd))
+		{
+			ft_lstclear(&data[fd]);
+			return (NULL);
+		}
+		else
+			return(EOF());
+		if (!ft_split_gnl_resolve(&data[fd], result, '\n'))
+		{
+			ft_lstclear(&data[fd]);
+			return (NULL);
+		}
+	}
+	if (!(*data[fd])->content)
 	{
 		
 	}
-	while (data_buf && data_buf->fd != fd)
-		data_buf = data_buf->next;
-	if (!data_buf)
+	if (!ft_strchr((*data[fd])->content))
 	{
-		data_buf = (t_list_fd *)malloc(sizeof(t_list_fd));
-		if (!data_buf)
-			return (NULL);
-		data_buf->line-> = NULL;
-		data->next = data_buf;
-	}
 
+	}
+	else
+	{
+		
+	}
 }
 int main()
 {
-	
+	static t_list_line	*data[FD_SIZE];
 }

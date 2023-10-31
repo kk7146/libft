@@ -6,7 +6,7 @@
 /*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:46:04 by eun               #+#    #+#             */
-/*   Updated: 2023/10/31 16:14:07 by donson           ###   ########.fr       */
+/*   Updated: 2023/10/31 18:05:44 by donson           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,9 @@ int	ft_split_gnl_resolve(t_list_line **result, char *s, char c)//return 값은 �
 	if (*s != '\0' && *s == c)
 	{
 		new = fill(s, c);
-			if (!new)
-				return (0);
-			ft_lst_add_back(result, new);
+		if (!new)
+			return (0);
+		ft_lst_add_back(result, new);
 	}
 	while (*s != '\0')
 	{
@@ -112,7 +112,7 @@ char	*ft_strjoin(char *s1, char *s2)
 	return (result);
 }
 
-int	read_buf(int fd, char **result)
+int	read_buf(char **result, int fd)
 {
 	int		read_size;
 	char	buffer[BUFFER_SIZE];
@@ -127,7 +127,7 @@ int	read_buf(int fd, char **result)
 			buffer[read_size] = '\0';
 		*result = ft_strjoin(*result, buffer);
 		if (!(*result))
-			return (-2);
+			return (-1);
 		i = 0;
 		while ((*result)[i] != '\0')
 			if ((*result)[i++] == '\n')
