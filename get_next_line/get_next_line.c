@@ -6,11 +6,36 @@
 /*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:46:00 by eun               #+#    #+#             */
-/*   Updated: 2023/10/31 18:15:40 by donson           ###   ########.fr       */
+/*   Updated: 2023/11/06 14:47:32 by donson           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+int	ft_strchr_lst(t_list_line *lst, int c)
+{
+	int	i;
+
+	i = 0;
+	if (!lst)
+		return (0);
+	while (lst)
+	{
+		while (1)
+		{
+			if (c == lst->content[i])
+				return (1);
+			if (lst->content[i] == '\0')
+				break ; 
+			i++;
+		}
+		i = 0;
+		lst = lst->next;
+	}
+	if (c == '\0')
+		return (0);
+	return (0);
+}
 
 void	ft_lstclear(t_list_line **lst)
 {
@@ -25,61 +50,81 @@ void	ft_lstclear(t_list_line **lst)
 	}
 }
 
-char	*ft_strchr(const char *s, int c)
+char	*ft_str_return(t_list_line **lst)//working on
 {
-	while (1)
-	{
-		if ((unsigned char)c == (unsigned char)*s)
-			return ((char *)s);
-		if ((unsigned char)*s == '\0')
-			break ;
-		s++;
-	}
-	if (c == '\0')
-		return ((char *)s);
-	return (NULL);
+	char		*result;
+	t_list_line	*lst_buf;
+	int			i;
+
+	lst_buf = *lst;
+	result = (*lst)->content;
+	(*lst) = (*lst)->next;
+	free(lst_buf);
+
+	i = 0;
+	while ((unsigned char)s[i] != '\0')
+		i++;
+	return (result);
 }
 
-char	*get_next_line(int fd)
+//char	*get_next_line(int fd)
+//{
+//	static t_list_line	*data[FD_SIZE];
+//	char				*buf;
+//
+//	if (fd < 1 || fd > FD_SIZE || BUFFER_SIZE < 1)
+//		return (NULL);
+//	if ((ft_strchr_lst(lst, '\n')))
+//	{
+//		if (!(*data[fd]))
+//		{
+//			*data[fd] = (t_list_line *)malloc(t_list_line);
+//			*data[fd]->content = (char *)malloc(1);
+//			*data[fd]->content[0] = 0;
+//		}
+//		read_buf(&buf, fd);
+//		ft_split_gnl_resolve(&data[fd], buf, '\n')
+//		if (ft_strchr_lst(&data[fd], '\n'))
+//			return(ft_str_return(&data[fd]));
+//	}
+//}
+#include <fcntl.h>
+
+void	check_leak(void)
 {
-	static t_list_line	*data[FD_SIZE];
-	char	*result;
-
-	if (fd < 1 || fd > FD_SIZE || BUFFER_SIZE < 1)
-		return (NULL);
-	if (!data[fd] || !(*data[fd])->content)
-	{
-		if (!data[fd])
-			data[fd] = (t_list_line *)malloc(sizeof(t_list_line));
-		if (!data[fd])
-			return (NULL);
-		if (read_buf(&result, fd))
-		{
-			ft_lstclear(&data[fd]);
-			return (NULL);
-		}
-		else
-			return(EOF());
-		if (!ft_split_gnl_resolve(&data[fd], result, '\n'))
-		{
-			ft_lstclear(&data[fd]);
-			return (NULL);
-		}
-	}
-	if (!(*data[fd])->content)
-	{
-		
-	}
-	if (!ft_strchr((*data[fd])->content))
-	{
-
-	}
-	else
-	{
-		
-	}
+	system("leaks a.out");
 }
+
 int main()
 {
-	static t_list_line	*data[FD_SIZE];
+	char		*chr;
+	t_list_line	*lst;
+	int			fd;
+
+	chr = (char *)malloc(1);
+	chr[0] = 0;
+	fd = open( "test", O_RDONLY);
+	lst = (t_list_line *)malloc(sizeof(t_list_line));
+	lst->content = (char *)malloc(2);
+	lst->content[0] = 'a';
+	lst->content[1] = 0;
+	read_buf(&chr, fd);
+	ft_split_gnl_resolve(&lst, chr, '\n');
+	free(chr);
+	if (ft_strchr_lst(lst, '\n'))
+	{
+		printf("sucess\n");
+		chr = ft_str_return(&lst);
+		printf("%s", chr);
+		free(chr);
+		chr = ft_str_return(&lst);
+		printf("%s", chr);
+		free(chr);
+	}
+	else
+		printf("fail");
+	ft_lstclear(&lst);
+	close(fd);
+	atexit(check_leak);
+	return (0);
 }

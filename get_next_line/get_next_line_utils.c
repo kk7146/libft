@@ -6,11 +6,62 @@
 /*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:46:04 by eun               #+#    #+#             */
-/*   Updated: 2023/10/31 18:05:44 by donson           ###   ########.fr       */
+/*   Updated: 2023/11/06 14:21:56 by donson           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+
+char	*ft_strjoin(char *s1, char *s2)
+{
+	size_t	i;
+	size_t	s1_len;
+	size_t	s2_len;
+	char	*s1_buf;
+	char	*result;
+
+	s1_len = 0;
+	s2_len = 0;
+	while (s1[s1_len] != '\0')
+		s1_len++;
+	while (s2[s2_len] != '\0')
+		s2_len++;
+	result = (char *)malloc(sizeof(char) * (s1_len + s2_len) + 1);
+	if (!result)
+		return (NULL);
+	i = 0;
+	s1_buf = s1;
+	while (*s1)
+		result[i++] = *s1++;
+	while (*s2)
+		result[i++] = *s2++;
+	result[i] = '\0';
+	free(s1_buf);
+	return (result);
+}
+
+int	read_buf(char **result, int fd)
+{
+	int		read_size;
+	char	buffer[BUFFER_SIZE];
+	size_t	i;
+
+	read_size = 1;
+	while (1)
+	{
+		read_size = read(fd, buffer, BUFFER_SIZE);
+		if (read_size < 1)
+			return (read_size);
+			buffer[read_size] = '\0';
+		*result = ft_strjoin(*result, buffer);
+		if (!(*result))
+			return (-1);
+		i = 0;
+		while ((*result)[i] != '\0')
+			if ((*result)[i++] == '\n')
+				return (1);
+	}
+}
 
 static void	ft_lst_add_back(t_list_line **lst, t_list_line *new)
 {
@@ -25,7 +76,14 @@ static void	ft_lst_add_back(t_list_line **lst, t_list_line *new)
 				break ;
 			temp = temp->next;
 		}
-		temp->next = new;
+		if (ft_strchr_lst(*lst, '\n'))
+			temp->next = new;
+		else
+		{
+			temp->content = ft_strjoin(temp->content, new->content);
+			free(new->content);
+			free(new);
+		}
 	}
 	else
 		*lst = new;
@@ -59,7 +117,7 @@ static t_list_line	*fill(char *str, char charset)
 	return (new);
 }
 
-int	ft_split_gnl_resolve(t_list_line **result, char *s, char c)//return 값은 오류코드. 
+int	ft_split_gnl_resolve(t_list_line **result, char *s, char c)
 {
 	t_list_line	*new;
 
@@ -86,109 +144,3 @@ int	ft_split_gnl_resolve(t_list_line **result, char *s, char c)//return 값은 �
 	}
 	return (1);
 }
-
-char	*ft_strjoin(char *s1, char *s2)
-{
-	size_t	i;
-	size_t	s1_len;
-	size_t	s2_len;
-	char	*result;
-
-	s1_len = 0;
-	s2_len = 0;
-	while (s1[s1_len] != '\0')
-		s1_len++;
-	while (s2[s2_len] != '\0')
-		s2_len++;
-	result = (char *)malloc(sizeof(char) * (s1_len + s2_len) + 1);
-	if (!result)
-		return (NULL);
-	i = 0;
-	while (*s1)
-		result[i++] = *s1++;
-	while (*s2)
-		result[i++] = *s2++;
-	result[i] = '\0';
-	return (result);
-}
-
-int	read_buf(char **result, int fd)
-{
-	int		read_size;
-	char	buffer[BUFFER_SIZE];
-	size_t	i;
-
-	read_size = 1;
-	while (1)
-	{
-		read_size = read(fd, buffer, BUFFER_SIZE);
-		if (read_size < 1)
-			return (read_size);
-			buffer[read_size] = '\0';
-		*result = ft_strjoin(*result, buffer);
-		if (!(*result))
-			return (-1);
-		i = 0;
-		while ((*result)[i] != '\0')
-			if ((*result)[i++] == '\n')
-				return (1);
-	}
-}
-//#include <fcntl.h>
-//
-//void	check_leak(void)
-//{
-//	system("leaks a.out");
-//}
-//
-//int main()
-//{
-//	char	*result;
-//	int		fd;
-//
-//	fd = open( "test", O_RDONLY);
-//	read_buf(fd, &result);
-//	printf("%s\n", result);
-//	printf("--------------------------------\n");
-//	free(result);
-//	read_buf(fd, &result);
-//	printf("%s", result);
-//	free(result);
-//	close(fd);
-//	return 0;
-//}
-
-//void	ft_lstclear(t_list_line **lst)
-//{
-//	t_list_line	*temp;
-//
-//	while (lst && *lst)
-//	{
-//		temp = (*lst)->next;
-//		free((*lst)->content);
-//		free(*lst);
-//		*lst = temp;
-//	}
-//}
-//
-//void	check_leak(void)
-//{
-//	system("leaks a.out");
-//}
-//
-//int main()
-//{
-//	char		*chr = "\n1\n2\n3\n4\n5\n";
-//	t_list_line	*lst;
-//	t_list_line	*temp;
-//
-//	ft_split_gnl_resolve(&lst, chr, '\n');
-//	temp = lst;
-//	while (temp != NULL)
-//	{
-//		printf("start%send\n", temp->content);
-//		temp = temp->next;
-//	}
-//	ft_lstclear(&lst);
-//	return (0);
-//}
