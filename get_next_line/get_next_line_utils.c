@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
+/*   By: eun <eun@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:46:04 by eun               #+#    #+#             */
-/*   Updated: 2023/11/06 14:21:56 by donson           ###   ########.fr       */
+/*   Updated: 2023/11/07 17:10:21 by eun              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,21 +45,25 @@ int	read_buf(char **result, int fd)
 	int		read_size;
 	char	buffer[BUFFER_SIZE];
 	size_t	i;
+	size_t	j;
 
-	read_size = 1;
+	j = 1;
 	while (1)
 	{
 		read_size = read(fd, buffer, BUFFER_SIZE);
-		if (read_size < 1)
-			return (read_size);
-			buffer[read_size] = '\0';
+		if (j && !read_size)
+			return (0);
+		if (read_size == -1)
+			return (-1);
+		buffer[read_size] = '\0';
 		*result = ft_strjoin(*result, buffer);
 		if (!(*result))
-			return (-1);
+			return (-2);
 		i = 0;
 		while ((*result)[i] != '\0')
-			if ((*result)[i++] == '\n')
+			if ((*result)[i++] == '\n' || !read_size)
 				return (1);
+		j = 0;
 	}
 }
 

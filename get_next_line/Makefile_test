@@ -1,9 +1,13 @@
 SRCS = get_next_line.c get_next_line_utils.c
 OBJC = $(SRCS:.c=.o)
+HEAD = get_next_line.h
 NAME = a.out
 FLAG = -Wall -Werror -Wextra
 
 all : $(NAME)
+
+.c.o:
+	gcc -g -c $< -o ${<:.c=.o} -I $(HEAD)
 
 $(NAME) : $(OBJC)
 	gcc -g $(OBJC)
