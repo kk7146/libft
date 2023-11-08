@@ -6,68 +6,71 @@
 /*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:46:04 by eun               #+#    #+#             */
-/*   Updated: 2023/11/08 14:10:35 by donson           ###   ########.fr       */
+/*   Updated: 2023/11/08 18:22:38 by donson           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+int	ft_strchr_lst(t_list_line *lst, int c)
+{
+	int	i;
+
+	i = 0;
+	if (!lst)
+		return (0);
+	if (!lst->content)
+		lst->content = ((char *)malloc(sizeof(char)));
+	if (!lst->content)
+		return (-1);
+	while (lst)
+	{
+		while (1)
+		{
+			if (c == lst->content[i])
+				return (1);
+			if (lst->content[i] == '\0')
+				break ;
+			i++;
+		}
+		i = 0;
+		lst = lst->next;
+	}
+	if (c == '\0')
+		return (0);
+	return (0);
+}
+
 char	*ft_strjoin(char *s1, char *s2)
 {
-	size_t	i;
-	size_t	s1_len;
-	size_t	s2_len;
+	size_t	len[3];
 	char	*s1_buf;
 	char	*result;
 
-	s1_len = 0;
-	s2_len = 0;
-	while (s1[s1_len] != '\0')
-		s1_len++;
-	while (s2[s2_len] != '\0')
-		s2_len++;
-	result = (char *)malloc(sizeof(char) * (s1_len + s2_len) + 1);
+	len[0] = 0;
+	len[1] = 0;
+	while (s1[len[0]] != '\0')
+		len[0]++;
+	while (s2[len[1]] != '\0')
+		len[1]++;
+	result = (char *)malloc(sizeof(char) * (len[0] + len[1]) + 1);
 	if (!result)
+	{
+		free(s1);
 		return (NULL);
-	i = 0;
+	}
+	len[2] = 0;
 	s1_buf = s1;
 	while (*s1)
-		result[i++] = *s1++;
+		result[len[2]++] = *s1++;
 	while (*s2)
-		result[i++] = *s2++;
-	result[i] = '\0';
+		result[len[2]++] = *s2++;
+	result[len[2]] = '\0';
 	free(s1_buf);
 	return (result);
 }
 
-int	read_buf(char **result, int fd)
-{
-	int		read_size;
-	char	buffer[BUFFER_SIZE + 1];
-	size_t	i;
-	size_t	j;
-
-	j = 1;
-	while (1)
-	{
-		read_size = read(fd, buffer, BUFFER_SIZE);
-		if (j && !read_size)
-			return (0);
-		if (read_size == -1)
-			return (-1);
-		buffer[read_size] = '\0';
-		*result = ft_strjoin(*result, buffer);
-		if (!(*result))
-			return (-2);
-		i = 0;
-		while ((*result)[i] != '\0')
-			if ((*result)[i++] == '\n' || !read_size)
-				return (1);
-		j = 0;
-	}
-}
-
-static void	ft_lst_add_back(t_list_line **lst, t_list_line *new)
+int	ft_lst_add_back(t_list_line **lst, t_list_line *new)
 {
 	t_list_line	*temp;
 
@@ -85,15 +88,18 @@ static void	ft_lst_add_back(t_list_line **lst, t_list_line *new)
 		else
 		{
 			temp->content = ft_strjoin(temp->content, new->content);
+			if (!temp->content)
+				return (0);
 			free(new->content);
 			free(new);
 		}
 	}
 	else
 		*lst = new;
+	return (1);
 }
 
-static t_list_line	*fill(char *str, char charset)
+t_list_line	*fill(char *str, char charset)
 {
 	int			len;
 	t_list_line	*new;
@@ -112,37 +118,25 @@ static t_list_line	*fill(char *str, char charset)
 		len++;
 	new->content = (char *)malloc(sizeof(char) * (len + 1));
 	if (!new->content)
+	{
+		free(new);
 		return (NULL);
+	}
 	new->content[len] = '\0';
 	while (len--)
 		new->content[len] = str[len];
 	return (new);
 }
 
-int	ft_split_gnl_resolve(t_list_line **result, char *s, char c)
+int	split_fail_free(t_list_line **result, t_list_line *new)
 {
-	t_list_line	*new;
-
-	if (*s != '\0' && *s == c)
+	if (!new)
+		return (0);
+	if (!ft_lst_add_back(result, new))
 	{
-		new = fill(s, c);
-		if (!new)
-			return (0);
-		ft_lst_add_back(result, new);
-	}
-	while (*s != '\0')
-	{
-		if (*s != '\0' && *s == c)
-			s++;
-		if (*s != '\0')
-		{
-			new = fill(s, c);
-			if (!new)
-				return (0);
-			ft_lst_add_back(result, new);
-		}
-		while (*s && !(*s == c))
-			s++;
+		free(new->content);
+		free(new);
+		return (0);
 	}
 	return (1);
 }
