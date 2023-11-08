@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: donson <donson@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/10/18 16:46:00 by eun               #+#    #+#             */
-/*   Updated: 2023/11/08 14:33:55 by donson           ###   ########.fr       */
+/*   Updated: 2023/11/08 14:23:23 by donson           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	ft_strchr_lst(t_list_line *lst, int c)
 	return (0);
 }
 
-char	*ft_lst_clear(t_list_line **lst, char *buf)
+char	*ft_lstclear(t_list_line **lst, char *buf)
 {
 	t_list_line	*temp;
 
@@ -83,15 +83,15 @@ char	*get_next_line(int fd)
 		return (ft_str_return(&data[fd], buf));
 	state = read_buf(&buf, fd);
 	if (state == -2 || state == -1)
-		return (ft_lst_clear(&data[fd], buf));
+		return (ft_lstclear(&data[fd], buf));
 	else if (state == 0)
 	{
 		if (!data[fd])
-			return (ft_lst_clear(&data[fd], buf));
+			return (ft_lstclear(&data[fd], buf));
 		return (ft_str_return(&data[fd], buf));
 	}
 	if (!ft_split_gnl_resolve(&data[fd], buf, '\n') && state == 1)
-		return (ft_lst_clear(&data[fd], buf));
+		return (ft_lstclear(&data[fd], buf));
 	return (ft_str_return(&data[fd], buf));
 }
 
