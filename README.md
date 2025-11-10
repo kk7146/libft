@@ -12,11 +12,10 @@ t_list 구조체 정의
 lstnew, lstadd_front, lstadd_back, lstmap, lstdelone, lstclear 등
 
 ## 빌드 및 사용법
-# 라이브러리 빌드
+### 라이브러리 빌드
 make
-
-# 생성된 정적 라이브러리
+### 생성된 정적 라이브러리
 libft.a
 
-# 사용 예시
+## 사용 예시
 gcc main.c libft.a -o program
